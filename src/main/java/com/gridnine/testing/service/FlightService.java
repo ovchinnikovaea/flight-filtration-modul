@@ -57,16 +57,13 @@ public class FlightService {
 
         for (Flight flight : flights) {
             List<Segment> segments = flight.getSegments();
-            boolean hasLongInterval = false;
+            Duration totalInterval = Duration.ZERO;
 
             for (int i = 0; i < segments.size() - 1; i++) {
-                Duration duration = Duration.between(segments.get(i).getArrivalDate(), segments.get(i + 1).getDepartureDate());
-                if (duration.toHours() > 2) {
-                    hasLongInterval = true;
-                    break;
-                }
+                Duration interval = Duration.between(segments.get(i).getArrivalDate(), segments.get(i + 1).getDepartureDate());
+                totalInterval = totalInterval.plus(interval);
             }
-            if (!hasLongInterval) {
+            if (totalInterval.toHours() <= 2) {
                 newFlights.add(flight);
             }
         }
